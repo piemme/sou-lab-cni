@@ -21,8 +21,8 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", ip: BOX_IPADDRESS_EXPOSED
 
   config.vm.hostname = BOX_HOSTNAME
-
-  config.vm.boot_timeout = 600
+  config.vm.define BOX_HOSTNAME do |host|
+  end
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -42,17 +42,19 @@ Vagrant.configure("2") do |config|
   end
   
   # VMware:
-  config.vm.provider "vmware_fusion" do |v|
-    v.gui = false
-    v.vmx["memsize"] = BOX_RAM_MB
-    v.vmx["numvcpus"] = BOX_COUNT_CPUS
+  config.vm.provider :vmware_fusion do |vmw|
+    vmw.gui = false
+    vmw.vmx["memsize"] = BOX_RAM_MB
+    vmw.vmx["numvcpus"] = BOX_COUNT_CPUS
   end
 
-  # config.vm.provision "ansible" do |ansible|
-  #   ansible.verbose = "v"
-  #   ansible.playbook = "provisioning/ansible-role-gitlab/playbook.yml"
-  #   ansible.inventory_path = "provisioning/inventory"
-  #   ansible.become = true
-  # end
+  # Provisioning via Ansible
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "v"
+    ansible.playbook = "provisioning/playbook.yml"
+    # ansible.inventory_path = "provisioning/inventory"
+    # ansible.limit = "all"
+    ansible.become = true # necessario? presente già nel playbook
+  end
 
 end

@@ -19,15 +19,56 @@
 
 ## Diario/Journal
 
-192.168.56.11 soufe1
-192.168.56.12 soube2
-
-
-Distribuzione: Oracle Linux, distribuzione più scaricata come immagine box vagrant
-
 Runtime Vagrant:
 
 ```
 $ vagrant -v
 Vagrant 2.2.19
 ```
+
+
+Requisiti
+
+
+Vedi: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-and-upgrading-ansible
+
+Python
+```
+$ python3 -V       
+Python 3.8.10
+```
+
+Pip
+```
+$ python3 -m pip -V           
+pip 20.0.2 from /usr/lib/python3/dist-packages/pip (python 3.8)
+```
+
+
+Ansible
+```
+$ ansible --version
+ansible [core 2.13.10]
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/home/paolo/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/paolo/.local/lib/python3.8/site-packages/ansible
+  ansible collection location = /home/paolo/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/bin/ansible
+  python version = 3.8.10 (default, May 26 2023, 14:05:08) [GCC 9.4.0]
+  jinja version = 3.1.2
+  libyaml = True
+```
+
+
+
+1) creare due VM
+2) raggiungibili via ping, ssh
+
+192.168.56.11 soufe1
+192.168.56.12 soube2
+
+
+Distribuzione: Oracle Linux, distribuzione più scaricata come immagine box vagrant
+
+https://developer.hashicorp.com/vagrant/docs/multi-machine
+
