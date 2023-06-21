@@ -97,12 +97,10 @@ Vagrant.configure("2") do |config|
   end  
 
   # Provisioning via Ansible
-  # config.vm.provision "ansible" do |ansible|
-    # ansible.verbose = "v"
-    # ansible.playbook = "provisioning/playbook.yml"
-    # ansible.inventory_path = "provisioning/inventory"
-    # ansible.limit = "all"
-    # ansible.become = true # necessario? presente già nel playbook
-  # end
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "v"
+    ansible.playbook = "provisioning/playbook.yml"
+    ansible.become = true # necessario? presente già nel playbook
+  end
 
 end
