@@ -1,14 +1,37 @@
 ---
 # tasks file for sou_podman
-- name: Debug
-  debug:
-    msg: 'Running!'
-  tags:
-    - debug
 - name: Show hostname
   command: "hostname"
   register: hostname_output
-  tags:
-    - debug
 - debug:
     var: hostname_output.stdout_lines
+
+- name: installing podman
+  package:
+    name: podman
+    state: present
+
+- name: Create the haproxy container
+  containers.podman.podman_container:
+    name: haproxy
+    image: haproxy
+    publish: 8080:8080
+    state: started
+  when: context == 'frontend'
+
+- name: Create the grafana container
+  containers.podman.podman_container:
+    name: grafana
+    image: grafana/grafana-oss
+    publish: 8081:8081
+    state: started
+  when: context == 'backend'
+
+
+- name: Create the prometheus container
+  containers.podman.podman_container:
+    name: prometheus
+    image: prom/prometheus
+    publish: 8082:8082
+    state: started
+  when: context == 'backend'

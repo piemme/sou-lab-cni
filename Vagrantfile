@@ -58,7 +58,7 @@ Vagrant.configure("2") do |config|
       machine.vm.provision "ansible" do |ansible|
         ansible.playbook = "provisioning/playbook.yml"
         ansible.become = true # necessario? presente già nel playbook
-        # ansible.verbose = "v"
+        ansible.verbose = "v"
       end
 
     end

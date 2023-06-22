@@ -98,3 +98,9 @@ https://developer.hashicorp.com/vagrant/docs/multi-machine
 
 $ ansible-galaxy init sou_podman
 
+
+
+
+requirements:
+
+$ ansible-galaxy collection install -r requirements.yml
