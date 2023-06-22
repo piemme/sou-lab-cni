@@ -72,3 +72,16 @@ Distribuzione: Oracle Linux, distribuzione più scaricata come immagine box vagr
 
 https://developer.hashicorp.com/vagrant/docs/multi-machine
 
+
+
+Tempo per creare le due VM + banale task Ansible
+
+Current machine states:
+
+soufe1                    running (virtualbox)
+soube2                    running (virtualbox)
+
+This environment represents multiple VMs. The VMs are all listed
+above with their current state. For more information about a specific
+VM, run `vagrant status NAME`.
+how much time (HH:MM.SEC): 00:04:24.026928839
