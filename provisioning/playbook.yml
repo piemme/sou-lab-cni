@@ -1,5 +1,28 @@
 ---
-- hosts: all
-  become: true
-  tasks:
-    - shell: echo "hello world"
+# - name: Simple task running on all hosts 
+#   hosts: all
+#   tasks:
+#     - debug:
+#         msg: 'Running on all hosts'
+#     - shell: hostname -f
+
+- name: Installing on FE
+  hosts: soufe1
+  tasks: 
+    - debug:
+        msg: 'Running on FE'
+#   vars_files:
+#     - vars/main.yml
+#   # roles:
+#   #   - geerlingguy.firewall
+ 
+- name: Installing on BE
+  hosts: soube2
+  tasks: 
+    - debug:
+        msg: 'Running on BE'
+#   vars_files:
+#     - vars/main.yml
+#   # roles:
+#   #   - geerlingguy.firewall
+
