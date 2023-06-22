@@ -97,3 +97,6 @@ https://developer.hashicorp.com/vagrant/docs/multi-machine
 
 
 ## Creating podman role
+
+$ ansible-galaxy init sou_podman
+
