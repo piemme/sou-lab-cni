@@ -61,6 +61,9 @@ ansible [core 2.13.10]
 
 
 
+## Creating VM with Vagrant and basic Ansible provisioning
+
+
 1) creare due VM
 2) raggiungibili via ping, ssh
 
@@ -85,3 +88,12 @@ This environment represents multiple VMs. The VMs are all listed
 above with their current state. For more information about a specific
 VM, run `vagrant status NAME`.
 how much time (HH:MM.SEC): 00:04:24.026928839
+
+
+https://developer.hashicorp.com/vagrant/docs/provisioning/ansible
+
+https://developer.hashicorp.com/vagrant/docs/multi-machine
+
+
+
+## Creating podman role

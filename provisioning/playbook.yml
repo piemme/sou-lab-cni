@@ -6,23 +6,23 @@
 #         msg: 'Running on all hosts'
 #     - shell: hostname -f
 
-- name: Installing on FE
+- name: Configuring Server Frontend
   hosts: soufe1
-  tasks: 
+  tasks:
     - debug:
-        msg: 'Running on FE'
-#   vars_files:
-#     - vars/main.yml
+        msg: 'Running on Frontend'
+  vars_files:
+    - vars/main.yml
 #   # roles:
 #   #   - geerlingguy.firewall
  
-- name: Installing on BE
+- name: Configuring Server Backend
   hosts: soube2
   tasks: 
     - debug:
-        msg: 'Running on BE'
-#   vars_files:
-#     - vars/main.yml
+        msg: 'Running on Backend'
+  vars_files:
+    - vars/main.yml
 #   # roles:
 #   #   - geerlingguy.firewall
 
