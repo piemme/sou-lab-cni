@@ -1,21 +1,24 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+nodes = {
+  'soufe1' => {
+    :box => 'generic/oracle8',
+    :ip => '192.168.56.11',
+    :cpu => 1,
+    :ram => 2048
+  },
+  'soube2' => {
+    :box => 'generic/oracle8',
+    :ip => '192.168.56.12',
+    :cpu => 1,
+    :ram => 2048
+  }
+}
+
 Vagrant.configure("2") do |config|
-  {
-    'soufe1' => {
-      :box => 'generic/oracle8',
-      :ip => '192.168.56.11',
-      :cpu => 1,
-      :ram => 2048
-    },
-    'soube2' => {
-      :box => 'generic/oracle8',
-      :ip => '192.168.56.12',
-      :cpu => 1,
-      :ram => 2048
-    }
-  }.each do |name, confs|
+
+  nodes.each do |name, confs|
 
     config.vm.define name do |machine|
 
@@ -56,7 +59,6 @@ Vagrant.configure("2") do |config|
         ansible.playbook = "provisioning/playbook.yml"
         ansible.become = true # necessario? presente già nel playbook
         # ansible.verbose = "v"
-        # ansible.limit = "all"
       end
 
     end
