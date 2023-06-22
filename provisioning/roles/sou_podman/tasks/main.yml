@@ -1,2 +1,11 @@
 ---
 # tasks file for sou_podman
+- name: Debug
+  debug:
+    msg: 'Running!'
+  tags:
+    - debug
+- name: Show hostname
+  command: "hostname"
+  tags:
+    - debug
