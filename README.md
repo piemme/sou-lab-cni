@@ -111,3 +111,8 @@ $ ansible-galaxy collection install -r requirements.yml
 enter in podmanc container
 
 
+podman exec -it de8f724b6d82  /bin/sh
+
+
+volumes, rootless
+https://www.redhat.com/sysadmin/container-permission-denied-errors

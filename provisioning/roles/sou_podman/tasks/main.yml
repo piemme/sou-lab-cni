@@ -37,6 +37,8 @@
     state: started
   when: context == 'backend'
 
+# PROMETHEUS
+
 - name: Ensure group "prometheus" exists
   ansible.builtin.group:
     name: prometheus
@@ -70,7 +72,7 @@
     # privileged: true
     volume:
       - /containers_vols/prometheus/conf/prometheus.yml:/etc/prometheus/prometheus.yml:z
-      # - /containers_vols/prometheus/data:/prometheus:z
+      - /containers_vols/prometheus/data:/prometheus:z,U
     publish: "{{ prometheus_port_bind }}" # expose, port
     state: started
   when: context == 'backend'
