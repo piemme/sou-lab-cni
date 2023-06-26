@@ -1,2 +1,7 @@
 ---
 # defaults file for sou_podman
+
+# prometheus
+prometheus_id: prometheus
+prometheus_port_bind: 9090:9090
+prometheus_path: /containers_vols/prometheus

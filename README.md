@@ -104,3 +104,10 @@ $ ansible-galaxy init sou_podman
 requirements:
 
 $ ansible-galaxy collection install -r requirements.yml
+
+
+
+
+enter in podmanc container
+
+
