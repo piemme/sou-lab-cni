@@ -10,8 +10,11 @@ haproxy_path: /containers_vols/haproxy
 grafana_id: grafana
 grafana_port_bind: 3000:3000
 grafana_path: /containers_vols/grafana
+grafana_relative_url: grafana
+grafana_backend: 192.168.56.12:3000
 
 # prometheus
 prometheus_id: prometheus
 prometheus_port_bind: 9090:9090
 prometheus_path: /containers_vols/prometheus
+prometheus_backend: 192.168.56.12:9090

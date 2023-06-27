@@ -30,7 +30,7 @@ backend grafana
   mode http
   balance roundrobin
   option httpchk
-  server grafana1 192.168.56.12:3000 check
+  server grafana1 {{ grafana_backend }} check
 
 backend prometheus
   mode http
@@ -38,4 +38,4 @@ backend prometheus
   # http-request replace-path ^([^\ ]\ /)prometheus[/]?(.) \1\2
   balance roundrobin
   option httpchk
-  server prometheus1 192.168.56.12:9090 check
+  server prometheus1 {{ prometheus_backend }} check
