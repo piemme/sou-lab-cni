@@ -1,6 +1,11 @@
 ---
 # defaults file for sou_podman
 
+# grafana
+grafana_id: grafana
+grafana_port_bind: 3000:3000
+grafana_path: /containers_vols/grafana
+
 # prometheus
 prometheus_id: prometheus
 prometheus_port_bind: 9090:9090

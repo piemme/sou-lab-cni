@@ -10,7 +10,7 @@
   ansible.posix.selinux:
     state: disabled
 
-- name: Create data dir
+- name: Create volume dir
   ansible.builtin.file:
     path: /containers_vols
     state: directory
@@ -21,6 +21,8 @@
     name: podman
     state: present
 
+# HAPROXY
+
 - name: Create the haproxy container
   containers.podman.podman_container:
     name: haproxy
@@ -29,27 +31,58 @@
     state: started
   when: context == 'frontend'
 
+# GRAFANA
+
+- name: Create group
+  ansible.builtin.group:
+    name: "{{ grafana_id }}"
+    state: present
+  when: context == 'backend'
+
+- name: Create user and add to the group
+  ansible.builtin.user:
+    name: "{{ grafana_id }}"
+    comment: grafana applications user
+    group: "{{ grafana_id }}"
+  when: context == 'backend'
+
+- name: Create grafana dirs
+  ansible.builtin.file:
+    path: "{{ grafana_path }}/{{ item }}"
+    state: directory
+    owner: "{{ grafana_id }}"
+    group: "{{ grafana_id }}"
+    mode: '0755'
+  with_items: ['data', 'conf']
+  when: context == 'backend'
+
+- name: Configure grafana
+  template: src=grafana.ini.j2 dest=/containers_vols/grafana/conf/grafana.ini
+
 - name: Create the grafana container
   containers.podman.podman_container:
     name: grafana
     image: grafana/grafana-oss
-    publish: 3000:3000
+    publish: "{{ grafana_port_bind }}"
+    volume:
+      - /containers_vols/grafana/conf/grafana.ini:/etc/grafana/grafana.ini:z
+      - /containers_vols/grafana/data:/var/lib/grafana:z,U
     state: started
   when: context == 'backend'
 
 # PROMETHEUS
 
-- name: Ensure group "prometheus" exists
+- name: Create group
   ansible.builtin.group:
-    name: prometheus
+    name: "{{ prometheus_id }}"
     state: present
   when: context == 'backend'
 
-- name: Add the user 'prometheus' with a specific uid and a primary group of 'prometheus'
+- name: Create user and add to the group
   ansible.builtin.user:
-    name: prometheus
+    name: "{{ prometheus_id }}"
     comment: prometheus applications user
-    group: prometheus
+    group: "{{ prometheus_id }}"
   when: context == 'backend'
 
 - name: Create Prometheus dirs
@@ -65,11 +98,10 @@
 - name: Configure Prometheus
   template: src=prometheus.yml.j2 dest=/containers_vols/prometheus/conf/prometheus.yml
 
-- name: Create the prometheus container
+- name: Create the Prometheus container
   containers.podman.podman_container:
     name: prometheus
     image: prom/prometheus
-    # privileged: true
     volume:
       - /containers_vols/prometheus/conf/prometheus.yml:/etc/prometheus/prometheus.yml:z
       - /containers_vols/prometheus/data:/prometheus:z,U
