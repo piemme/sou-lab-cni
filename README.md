@@ -15,7 +15,8 @@
 * Versionare tutto in sou-lab-cni => Progetto Vagrant, Ansible Role, Templates e documentazione in Markdown su README.md
 * Il progetto deve automatizzare tutti i punti all'esecuzione di "vagrant up o vagrant provision"
 
-## Diario/Journal
+
+## Versioni e requisiti
 
 Runtime Vagrant:
 
@@ -23,12 +24,6 @@ Runtime Vagrant:
 $ vagrant -v
 Vagrant 2.2.19
 ```
-
-
-Requisiti
-
-
-Vedi: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-and-upgrading-ansible
 
 Python
 ```
@@ -44,6 +39,9 @@ pip 20.0.2 from /usr/lib/python3/dist-packages/pip (python 3.8)
 
 
 Ansible
+
+Vedi: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-and-upgrading-ansible
+
 ```
 $ ansible --version
 ansible [core 2.13.10]
@@ -58,113 +56,80 @@ ansible [core 2.13.10]
 ```
 
 
+## Elenco IP VM e DNS locale
 
-## Creating VM with Vagrant and basic Ansible provisioning
-
-
-1) creare due VM
-2) raggiungibili via ping, ssh
-
+```
 192.168.56.11 soufe1
 192.168.56.12 soube2
+```
 
 ```
 /etc/hosts
-```
 # SOU LAB
-192.168.56.11 grafana.local prometheus.local
+192.168.56.11 haproxy.local
 ```
 
-Distribuzione: Oracle Linux, distribuzione più scaricata come immagine box vagrant
+## Descrizione del sistema tramite automation
 
-https://developer.hashicorp.com/vagrant/docs/multi-machine
+I comandi ```vagrant up``` e ```vagrant provision``` sono stati inclusi negli script shell:
 
+- create.sh
+- provisio.sh
+- destroy.sh
 
-
-Tempo per creare le due VM + banale task Ansible
-
-Current machine states:
-
-soufe1                    running (virtualbox)
-soube2                    running (virtualbox)
-
-This environment represents multiple VMs. The VMs are all listed
-above with their current state. For more information about a specific
-VM, run `vagrant status NAME`.
-how much time (HH:MM.SEC): 00:04:24.026928839
+E' stato aggiunto ```destroy.sh``` per ripartire da zero con la creazione delle VM.
 
 
-https://developer.hashicorp.com/vagrant/docs/provisioning/ansible
+## Creazione del sistema (è la parte importante!)
 
-https://developer.hashicorp.com/vagrant/docs/multi-machine
-
-
-
-## Creating podman role
-
-$ ansible-galaxy init sou_podman
-
-
-
-
-requirements:
-
-$ ansible-galaxy collection install -r requirements.yml
-
-
-
-
-podman command
-
+Il comando per creare tutto il sistema è:
 ```
-# list container
+./create.sh && ./provision.sh
+```
 
+
+## Verifica accesso diretto ai servizi
+
+- http://192.168.56.12:3000/grafana/
+- http://192.168.56.12:9090/prometheus/
+
+
+## Verifica accesso dietro reverse proxy
+
+- http://haproxy.local:8080/prometheus
+- http://haproxy.local:8080/grafana
+
+
+### Comandi utili
+
+
+Creating scaffolding role
+```
+ansible-galaxy init sou_podman
+```
+
+podman list container
+```
 podman ps --all
 ```
 
+enter in podmanc container
 ```
-# enter in podmanc container
+podman exec -it <container-name>  /bin/sh
+```
 
-podman exec -it de8f724b6d82  /bin/sh
-``
+### References
+
+vagrant multi machine
+- https://developer.hashicorp.com/vagrant/docs/provisioning/ansible
+- https://developer.hashicorp.com/vagrant/docs/multi-machine
 
 
-volumes, rootless
-https://www.redhat.com/sysadmin/container-permission-denied-errors
-https://www.tutorialworks.com/podman-rootless-volumes/
-
-
+podman volumes, rootless and permissions
+- https://www.redhat.com/sysadmin/container-permission-denied-errors
+- https://www.tutorialworks.com/podman-rootless-volumes/
 
 podman ansible ref
-https://docs.ansible.com/ansible/latest/collections/containers/podman/podman_container_module.html#examples
 
-
-ansible example
-
-
-
-grafana pwd: admin/admin
-
-http://192.168.56.12:3000/
-
-http://192.168.56.12:9090/
-
-
-
-
-https://stackoverflow.com/questions/47537954/how-to-make-docker-container-see-real-user-ip
-
-
-# firewall-cmd --permanent --zone=internal --change-interface=eth1
-The interface is under control of NetworkManager, setting zone to 'internal'.
-success
-
-
-# firewall-cmd --permanent --zone=internal --change-interface=cni-podman0
-success
-
-
-
-http://haproxy.local:8080/prometheus
-http://haproxy.local:8080/grafana
+- https://docs.ansible.com/ansible/latest/collections/containers/podman/podman_container_module.html#examples
 
