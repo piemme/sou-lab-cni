@@ -1,6 +1,11 @@
 ---
 # defaults file for sou_podman
 
+# haproxy
+haproxy_id: haproxy
+haproxy_port_bind: 8080:8080
+haproxy_path: /containers_vols/haproxy
+
 # grafana
 grafana_id: grafana
 grafana_port_bind: 3000:3000

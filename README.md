@@ -68,6 +68,12 @@ ansible [core 2.13.10]
 192.168.56.11 soufe1
 192.168.56.12 soube2
 
+```
+/etc/hosts
+```
+# SOU LAB
+192.168.56.11 grafana.local prometheus.local
+```
 
 Distribuzione: Oracle Linux, distribuzione più scaricata come immagine box vagrant
 
@@ -143,4 +149,22 @@ http://192.168.56.12:3000/
 
 http://192.168.56.12:9090/
 
+
+
+
+https://stackoverflow.com/questions/47537954/how-to-make-docker-container-see-real-user-ip
+
+
+# firewall-cmd --permanent --zone=internal --change-interface=eth1
+The interface is under control of NetworkManager, setting zone to 'internal'.
+success
+
+
+# firewall-cmd --permanent --zone=internal --change-interface=cni-podman0
+success
+
+
+
+http://haproxy.local:8080/prometheus
+http://haproxy.local:8080/grafana
 

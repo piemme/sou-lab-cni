@@ -23,11 +23,40 @@
 
 # HAPROXY
 
+- name: Create group
+  ansible.builtin.group:
+    name: "{{ haproxy_id }}"
+    state: present
+  when: context == 'frontend'
+
+- name: Create user and add to the group
+  ansible.builtin.user:
+    name: "{{ haproxy_id }}"
+    comment: haproxy applications user
+    group: "{{ haproxy_id }}"
+  when: context == 'frontend'
+
+- name: Create haproxy dirs
+  ansible.builtin.file:
+    path: "{{ haproxy_path }}/{{ item }}"
+    state: directory
+    owner: "{{ haproxy_id }}"
+    group: "{{ haproxy_id }}"
+    mode: '0755'
+  with_items: ['conf']
+  when: context == 'frontend'
+
+- name: Configure haproxy
+  template: src=haproxy.cfg.j2 dest=/containers_vols/haproxy/conf/haproxy.cfg
+  when: context == 'frontend'
+
 - name: Create the haproxy container
   containers.podman.podman_container:
     name: haproxy
-    image: haproxy
-    publish: 8080:8080
+    image: haproxy:alpine
+    publish: "{{ haproxy_port_bind }}"
+    volume:
+      - /containers_vols/haproxy/conf/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:z
     state: started
   when: context == 'frontend'
 
@@ -58,6 +87,7 @@
 
 - name: Configure grafana
   template: src=grafana.ini.j2 dest=/containers_vols/grafana/conf/grafana.ini
+  when: context == 'backend'
 
 - name: Create the grafana container
   containers.podman.podman_container:
@@ -97,11 +127,16 @@
 
 - name: Configure Prometheus
   template: src=prometheus.yml.j2 dest=/containers_vols/prometheus/conf/prometheus.yml
+  when: context == 'backend'
 
 - name: Create the Prometheus container
   containers.podman.podman_container:
     name: prometheus
     image: prom/prometheus
+    command:
+      - '--web.external-url=/prometheus/'
+      - '--web.route-prefix=/prometheus/'
+      - '--config.file=/etc/prometheus/prometheus.yml'
     volume:
       - /containers_vols/prometheus/conf/prometheus.yml:/etc/prometheus/prometheus.yml:z
       - /containers_vols/prometheus/data:/prometheus:z,U
