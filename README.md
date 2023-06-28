@@ -92,7 +92,7 @@ Il comando per creare tutto il sistema è:
 ```
 vagrant ssh <nomevm>
 
-# Esempii:
+# Esempi:
 
 vagrant ssh soufe1
 
@@ -107,9 +107,6 @@ vagrant provision soufe1
 
 
 ## Verifica accesso dietro reverse proxy
-
-- http://haproxy.local:8080/prometheus
-- http://haproxy.local:8080/grafana (credenziali: admin/admin)
 
 - https://haproxy.local:8443/grafana/
 - https://haproxy.local:8443/prometheus  (credenziali: admin/admin)
