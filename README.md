@@ -109,8 +109,11 @@ vagrant provision soufe1
 ## Verifica accesso dietro reverse proxy
 
 - http://haproxy.local:8080/prometheus
-- http://haproxy.local:8080/grafana
+- http://haproxy.local:8080/grafana (credenziali: admin/admin)
 
+- https://haproxy.local:8443/grafana/
+- https://haproxy.local:8443/prometheus  (credenziali: admin/admin)
+ 
 
 ### Comandi utili
 
