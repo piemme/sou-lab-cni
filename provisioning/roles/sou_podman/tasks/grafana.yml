@@ -1,5 +1,9 @@
 # GRAFANA
 
+- name: Disable SELinux
+  ansible.posix.selinux:
+    state: disabled
+
 - name: Create group
   ansible.builtin.group:
     name: "{{ grafana_id }}"

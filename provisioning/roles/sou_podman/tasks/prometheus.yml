@@ -1,5 +1,9 @@
 # PROMETHEUS
 
+- name: Disable SELinux
+  ansible.posix.selinux:
+    state: disabled
+
 - name: Create group
   ansible.builtin.group:
     name: "{{ prometheus_id }}"
