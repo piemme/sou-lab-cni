@@ -74,7 +74,7 @@ ansible [core 2.13.10]
 I comandi ```vagrant up``` e ```vagrant provision``` sono stati inclusi negli script shell:
 
 - create.sh
-- provisio.sh
+- provision.sh
 - destroy.sh
 
 E' stato aggiunto ```destroy.sh``` per ripartire da zero con la creazione delle VM.
@@ -85,6 +85,18 @@ E' stato aggiunto ```destroy.sh``` per ripartire da zero con la creazione delle 
 Il comando per creare tutto il sistema è:
 ```
 ./create.sh && ./provision.sh
+```
+
+### Per agire sulle singole VM:
+
+```
+vagrant ssh <nomevm>
+
+# Esempii:
+
+vagrant ssh soufe1
+
+vagrant provision soufe1
 ```
 
 

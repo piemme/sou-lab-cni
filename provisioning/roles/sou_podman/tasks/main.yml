@@ -43,7 +43,36 @@
     owner: "{{ haproxy_id }}"
     group: "{{ haproxy_id }}"
     mode: '0755'
-  with_items: ['conf']
+  with_items: ['conf', 'certificates', 'certificates/crt', 'certificates/pem']
+  when: context == 'frontend'
+
+- name: Create private key (RSA, 4096 bits)
+  community.crypto.openssl_privatekey:
+    path: "{{ haproxy_path }}/certificates/crt/haproxy.local.key"
+  when: context == 'frontend'
+
+- name: Create certificate signing request (CSR) for self-signed certificate
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ haproxy_path }}/certificates/crt/haproxy.local.key"
+    common_name: haproxy.local
+    organization_name: ACME, Inc.
+    subject_alt_name:
+      - "DNS:haproxy.some"
+  register: csr
+  when: context == 'frontend'
+
+- name: Create self-signed certificate from CSR
+  community.crypto.x509_certificate:
+    path: "{{ haproxy_path }}/certificates/crt/haproxy.local.crt"
+    csr_content: "{{ csr.csr }}"
+    privatekey_path: "{{ haproxy_path }}/certificates/crt/haproxy.local.key"
+    provider: selfsigned
+  when: context == 'frontend'
+
+- name: Assemble from fragments from a directory
+  ansible.builtin.assemble:
+    src: "{{ haproxy_path }}/certificates/crt"
+    dest: "{{ haproxy_path }}/certificates/pem/haproxy.local.pem"
   when: context == 'frontend'
 
 - name: Configure haproxy
@@ -57,6 +86,7 @@
     publish: "{{ haproxy_port_bind }}"
     volume:
       - /containers_vols/haproxy/conf/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:z
+      - /containers_vols/haproxy/certificates:/usr/local/certificates:z
     state: started
   when: context == 'frontend'
 
