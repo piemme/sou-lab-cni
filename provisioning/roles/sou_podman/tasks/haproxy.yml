@@ -1,0 +1,68 @@
+# HAPROXY
+
+- name: Create group
+  ansible.builtin.group:
+    name: "{{ haproxy_id }}"
+    state: present
+  
+
+- name: Create user and add to the group
+  ansible.builtin.user:
+    name: "{{ haproxy_id }}"
+    comment: haproxy applications user
+    group: "{{ haproxy_id }}"
+  
+
+- name: Create haproxy dirs
+  ansible.builtin.file:
+    path: "{{ haproxy_path }}/{{ item }}"
+    state: directory
+    owner: "{{ haproxy_id }}"
+    group: "{{ haproxy_id }}"
+    mode: '0755'
+  with_items: ['conf', 'certificates', 'certificates/crt', 'certificates/pem']
+  
+
+- name: Create private key (RSA, 4096 bits)
+  community.crypto.openssl_privatekey:
+    path: "{{ haproxy_path }}/certificates/crt/haproxy.local.key"
+  
+
+- name: Create certificate signing request (CSR) for self-signed certificate
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ haproxy_path }}/certificates/crt/haproxy.local.key"
+    common_name: haproxy.local
+    organization_name: ACME, Inc.
+    subject_alt_name:
+      - "DNS:haproxy.some"
+  register: csr
+  
+
+- name: Create self-signed certificate from CSR
+  community.crypto.x509_certificate:
+    path: "{{ haproxy_path }}/certificates/crt/haproxy.local.crt"
+    csr_content: "{{ csr.csr }}"
+    privatekey_path: "{{ haproxy_path }}/certificates/crt/haproxy.local.key"
+    provider: selfsigned
+  
+
+- name: Assemble from fragments from a directory
+  ansible.builtin.assemble:
+    src: "{{ haproxy_path }}/certificates/crt"
+    dest: "{{ haproxy_path }}/certificates/pem/haproxy.local.pem"
+  
+
+- name: Configure haproxy
+  template: src=haproxy.cfg.j2 dest=/containers_vols/haproxy/conf/haproxy.cfg
+  
+
+- name: Create the haproxy container
+  containers.podman.podman_container:
+    name: haproxy
+    image: haproxy:alpine
+    publish: "{{ haproxy_port_bind }}"
+    volume:
+      - /containers_vols/haproxy/conf/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:z
+      - /containers_vols/haproxy/certificates:/usr/local/certificates:z
+    state: started
+  

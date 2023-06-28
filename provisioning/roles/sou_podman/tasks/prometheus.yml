@@ -1,0 +1,43 @@
+# PROMETHEUS
+
+- name: Create group
+  ansible.builtin.group:
+    name: "{{ prometheus_id }}"
+    state: present
+
+
+- name: Create user and add to the group
+  ansible.builtin.user:
+    name: "{{ prometheus_id }}"
+    comment: prometheus applications user
+    group: "{{ prometheus_id }}"
+
+
+- name: Create Prometheus dirs
+  ansible.builtin.file:
+    path: "{{ prometheus_path }}/{{ item }}"
+    state: directory
+    owner: "{{ prometheus_id }}"
+    group: "{{ prometheus_id }}"
+    mode: '0755'
+  with_items: ['data', 'conf']
+
+
+- name: Configure Prometheus
+  template: src=prometheus.yml.j2 dest=/containers_vols/prometheus/conf/prometheus.yml
+
+
+- name: Create the Prometheus container
+  containers.podman.podman_container:
+    name: prometheus
+    image: prom/prometheus
+    command:
+      - '--web.external-url=/prometheus/'
+      - '--web.route-prefix=/prometheus/'
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volume:
+      - /containers_vols/prometheus/conf/prometheus.yml:/etc/prometheus/prometheus.yml:z
+      - /containers_vols/prometheus/data:/prometheus:z,U
+    publish: "{{ prometheus_port_bind }}" # expose, port
+    state: started
+

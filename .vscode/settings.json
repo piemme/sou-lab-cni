@@ -1,0 +1,5 @@
+{
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks": "file:///home/paolo/progetti/sourcesense/devops-lab/provisioning/roles/sou_podman/tasks/prometheus.yml"
+  }
+}

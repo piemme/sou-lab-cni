@@ -1,0 +1,40 @@
+# GRAFANA
+
+- name: Create group
+  ansible.builtin.group:
+    name: "{{ grafana_id }}"
+    state: present
+  
+
+- name: Create user and add to the group
+  ansible.builtin.user:
+    name: "{{ grafana_id }}"
+    comment: grafana applications user
+    group: "{{ grafana_id }}"
+  
+
+- name: Create grafana dirs
+  ansible.builtin.file:
+    path: "{{ grafana_path }}/{{ item }}"
+    state: directory
+    owner: "{{ grafana_id }}"
+    group: "{{ grafana_id }}"
+    mode: '0755'
+  with_items: ['data', 'conf']
+  
+
+- name: Configure grafana
+  template: src=grafana.ini.j2 dest=/containers_vols/grafana/conf/grafana.ini
+  
+
+- name: Create the grafana container
+  containers.podman.podman_container:
+    name: grafana
+    image: grafana/grafana-oss
+    publish: "{{ grafana_port_bind }}"
+    privileged: True
+    volume:
+      - /containers_vols/grafana/conf/grafana.ini:/etc/grafana/grafana.ini:z
+      - /containers_vols/grafana/data:/var/lib/grafana:z,U
+    state: started
+  
