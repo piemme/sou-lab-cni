@@ -82,10 +82,12 @@ E' stato aggiunto ```destroy.sh``` per ripartire da zero con la creazione delle 
 
 ## Creazione del sistema (è la parte importante!)
 
-Il comando per creare tutto il sistema è:
+Il comando per creare e avviare tutto il sistema è:
 ```
-./create.sh && ./provision.sh
+./create.sh
 ```
+
+
 
 ### Per agire sulle singole VM:
 
