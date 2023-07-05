@@ -148,3 +148,19 @@ podman ansible ref
 - https://docs.ansible.com/ansible/latest/collections/containers/podman/podman_container_module.html#examples
 
 
+
+### Retrospettiva
+
+Elenco punti difficoltosi:
+
+* mai usato podman
+* scarsa dimestichezza con ansible
+* progetto multinodo vagrant
+* differenziare azioni in un ruolo (anziché nel playbook), vedi variabile ```context```
+* owner e permissions dei volumi
+  * container che gira come root
+  * problema del "permission denied"
+  * SELinux
+  * Namespace
+  * config map utenti
+* identificazione dell'host nel container all'interno della VM (haproxy lo legge come container id)
